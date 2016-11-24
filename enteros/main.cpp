@@ -5,6 +5,8 @@
 #include <cmath>
 #include <vector>
 #include <algorithm>
+#include "matriz.cpp"
+
 using namespace std;
 /*
  * Nombre: Eddy Rene Caceres Huacarpuma
@@ -24,10 +26,15 @@ using namespace std;
 typedef vector<pair<int, int> > vpairs;
 typedef pair<int, int > punto;
 typedef vector<pair<int,int> > vpoints;
+typedef vector<pair<float,float> > vfpoints;
 int xmax, xmin, ymax, ymin=0;
 
 vpoints * puntos = new vpoints();
 GLsizei winWidth = 640, winHeight = 480;
+
+vfpoints * vertices = new vfpoints();
+
+matriz ma;
 
 void reshape(int width, int height)
 {
@@ -38,6 +45,12 @@ void reshape(int width, int height)
  gluOrtho2D(-winWidth/2, winWidth/2, -winHeight/2, winHeight/2);
  glMatrixMode(GL_MODELVIEW);
  glLoadIdentity();
+/*
+ glViewport(0, 0, width, height);
+ glMatrixMode(GL_PROJECTION);
+ glLoadIdentity();
+ glOrtho(-1, 1, -1, 1, -1, 1);
+ glMatrixMode(GL_MODELVIEW);*/
 }
 
 void init()
@@ -97,30 +110,136 @@ void linea_pediente(int x1, int y1, int x2, int y2 )
 
 void pm_linea(int x1, int y1, int x2, int y2 )
 {
-   int dx, dy, incE, incNE, d, x, y;
+   int dx, dy, incE, incNE, d, x, y, ax , ay;
    dx = x2 - x1;
    dy = y2 - y1;
+   ax=ay=1;
+   if( dy<0) // con estas lineas cambiamos la orientacion de avance para cuando la pendiente es negativa.
+   {
+        dy = -dy;
+        ay= -1;
+   }
+    if(dx<0)
+    {
+        dx=-dx;
+        ax=-1;
+    }
    d = 2 * dy - dx; /* Valor inicial de d */
    incE = 2 * dy; /* Incremento de E */
    incNE = 2 * (dy - dx); /* Incremento de NE */
    x = x1;
    y = y1;
-   glBegin(GL_POINTS);
-   glVertex2i(x, y);
-   while (x < x2)
-   {
-       if (d <= 0){
-           d = d + incE;
-           x++;
-       }else{
-           d = d + incNE;
-           x++;
-           y++;
+  glBegin(GL_POINTS);
+  glVertex2i(x, y);
+  if(x==x2 )
+  {
+       while ( y!=y2 )
+       {
+            y+=ay;
+            glVertex2i(x, y);
        }
-       glVertex2i(x, y);
-   }
+  }
+  else{
+        while ( x != x2 )
+       {
+           if (d < 0){
+               d = d + incE;
+               x+=ax;
+           }else{
+               d = d + incNE;
+               x+=ax;
+               y+=ay;
+           }
+           glVertex2i(x, y);
+       }
+  }
    glEnd();
 }
+
+void pm_linea_float(GLfloat x1, GLfloat y1,GLfloat x2, GLfloat y2 )
+{
+    GLfloat dx, dy, incE, incNE, d, x, y, ax , ay;
+    dx = x2 - x1;
+    dy = y2 - y1;
+    ax=ay=1;
+    if( dy<0) // con estas lineas cambiamos la orientacion de avance para cuando la pendiente es negativa.
+    {
+         dy=-dy;
+         ay= -1;
+    }
+     if(dx<0)
+     {
+         dx=-dx;
+         ax=-1;
+     }
+   if(dx > dy) // Para un pendiente  0< m <1
+   {
+       d = 2 * dy - dx; /* Valor inicial de d */
+         incE = 2 * dy; /* Incremento de E */
+         incNE = 2 * (dy - dx); /* Incremento de NE */
+         x = x1;
+         y = y1;
+        glBegin(GL_POINTS);
+        glVertex2f(x, y);
+        while (abs(x-x2)>1)
+       {
+           if (d < 0){
+               d = d + incE;
+               x+=ax;
+               //cout<<"abs"<<endl;
+           }else{
+               d = d + incNE;
+               x+=ax;
+               y+=ay;
+           }
+           glVertex2f(x, y);
+       }
+   }
+    else{ // para un pendiente m<0  || m> 1
+
+       d = 2 * dx - dy; /* Valor inicial de d */
+         incE = 2 * dx; /* Incremento de E */
+         incNE = 2 * (dx - dy); /* Incremento de NE */
+         x = x1;
+         y = y1;
+        glBegin(GL_POINTS);
+        while (abs(y-y2)>1)
+       {
+           if (d < 0){
+               d = d + incE;
+               y+=ay;
+               //cout<<"abs"<<endl;
+           }else{
+               d = d + incNE;
+               x+=ax;
+               y+=ay;
+           }
+           glVertex2f(x, y);
+       }
+   }
+    glEnd();
+}
+
+void mypoligono(int  lados, int radio)
+{
+    GLfloat angulo1=0.0;
+    GLfloat angulo2=0.0;
+
+    GLfloat grados = 360/(GLfloat)lados;
+    for (GLfloat i=0; i<360; i+=grados)
+    {
+       angulo1 = (GLfloat)i* 3.14159f/180.0f;
+       angulo2 = (GLfloat)(i+grados)*3.14159f/180.0f; // grados a radianes
+       GLfloat x = radio*cos(angulo1);
+       GLfloat y = radio*sin(angulo1);
+       GLfloat x2 = radio*cos(angulo2);//multiplicaion el radio ya se soluciona este incoveniente.. XD
+       GLfloat y2 = radio*sin(angulo2);
+       pm_linea_float(x,y,x2,y2);
+       vertices->push_back(make_pair(x,y));
+       cout<<"cc: " << x <<" "<<y<<" "<<x2<<" "<<y2<<endl;
+    }
+}
+
 void poligono(int lados, int radio)
 {
      GLfloat angulo1=0.0;
@@ -209,7 +328,7 @@ void dibuja_poligono()
     GLint l = 4;GLint r=200;
     cout<<"Ingrese lados  radio (de preferencia >150)"<<endl;
     cin>>l>>r;
-    poligono(l,r);
+    mypoligono(l,r);
     glFlush();
 }
 
@@ -218,9 +337,32 @@ void dibuja_linea()
     glClear (GL_COLOR_BUFFER_BIT);
     glColor3f (0.0, 0.0, 1.0);
 
-    pm_linea(10,10,250,100);
-    //linea_pediente(10,10,250,80);
+    //glBegin(GL_POINTS);
+
+   pm_linea_float(200 ,0,61.8036 ,190.211);
+   //glColor3f (1.0, 0.0, 1.0);
+  // glLoadIdentity();
+  // //glBegin(GL_LINES);
+    //glVertex2f(61.8036 ,190.211);
+    //glVertex2f(200, 0);
+
+   //pm_linea_float( -161.803, 117.557,61.8036 ,190.211);
+   //pm_linea_float( -161.803, 117.557,-161.804 ,-117.557);
+   //pm_linea_float( -161.804, -117.557, 61.8026, -190.212);
+  // pm_linea_float( 61.8026 ,-190.212, 200 ,-0.00101407);
+   //pm_linea_float( 200, -0.00101407, 61.8045, 190.211);
+
+    glEnd();
     glFlush();
+    /*glClear(GL_COLOR_BUFFER_BIT);
+    glColor3f(1,1,1);
+    glLoadIdentity();
+    glBegin(GL_TRIANGLES);
+    glVertex2f(-1,-1);
+    glVertex2f(1,-1);
+    glVertex2f(0,1);
+    glEnd();
+    glFlush();*/
 }
 
 void dibuja_circulo()
@@ -315,7 +457,6 @@ void build_TB(int cnt, punto * pts, nodo * nodos[])
         p1=p2;
     }
 }
-
 void build_LBA (int scan, nodo *  active, nodo * nodos[])
 {
     nodo * p, *q;
@@ -407,7 +548,6 @@ void relleno_convexo()
     puntos[1]=make_pair(0,200);
     puntos[2]=make_pair(200,200);
     puntos[3]=make_pair(200,0);
-
     glClear (GL_COLOR_BUFFER_BIT);
     glColor3f (0.0, 1.0, 1.0);
     scanfill(4,puntos);
@@ -416,7 +556,6 @@ void relleno_convexo()
 void relleno_concavo(){
 
        punto * puntos=new punto[5];
-
        puntos[0]=make_pair(160,120);
        puntos[1]=make_pair(180,5);
        puntos[2]=make_pair(100,70);
@@ -428,6 +567,139 @@ void relleno_concavo(){
        glFlush();
    }
 
+
+
+matriz traslacion(int tx , int ty)
+{
+   /*
+    * crea la matriz traslacio
+    */
+
+    crear_matriz(ma,3,3);
+    matriz_identidad(ma,3,3);
+    ma[2][0]=tx;
+    ma[2][1]=ty;
+   // mypoligono(4,100);
+    imprimir(ma,3,3);
+    cout<<endl<<endl;
+    matriz p = vertices_matriz(*vertices);
+    int filas= vertices->size();
+    imprimir(p,filas,3);
+    cout<<endl<<endl;
+    matriz result=multiplicacion(p,filas,3,ma,3);
+    imprimir(result,filas,3);
+    return result;
+}
+
+matriz rotacion(double a)
+{
+   /*
+    * crea la matriz traslacio
+    */
+    GLfloat ang=(GLfloat)(a)*3.14159f/180.0f;
+    crear_matriz(ma,3,3);
+    matriz_identidad(ma,3,3);
+    ma[0][0]=cos(ang);
+    ma[0][1]=sin(ang);
+    ma[1][0]=-sin(ang);
+    ma[1][1]=cos(ang);
+   // mypoligono(4,100);
+    imprimir(ma,3,3);
+    cout<<endl<<endl;
+    matriz p = vertices_matriz(*vertices);
+    int filas= vertices->size();
+    imprimir(p,filas,3);
+    cout<<endl<<endl;
+    matriz result=multiplicacion(p,filas,3,ma,3);
+    imprimir(result,filas,3);
+    return result;
+}
+
+matriz escalado(int tx , int ty)
+{
+   /*
+    * crea la matriz traslacio
+    */
+
+    crear_matriz(ma,3,3);
+    matriz_identidad(ma,3,3);
+    ma[0][0]=tx;
+    ma[1][1]=ty;
+   // mypoligono(4,100);
+    imprimir(ma,3,3);
+    cout<<endl<<endl;
+    matriz p = vertices_matriz(*vertices);
+    int filas= vertices->size();
+    imprimir(p,filas,3);
+    cout<<endl<<endl;
+    matriz result=multiplicacion(p,filas,3,ma,3);
+    imprimir(result,filas,3);
+    return result;
+}
+
+void dibujar_matr(matriz & m, int f)
+{
+    for( int i =0;i<f ;i++)
+    {
+        if(i==f-1)
+        {
+            pm_linea_float(m[i][0],m[i][1],m[0][0],m[0][1]);
+        }
+        else
+        {
+            int x=m[i][0];
+            int  y=m[i][1];
+            int xx=m[i+1][0];
+            int  yy=m[i+1][1];
+            pm_linea_float(x,y,xx,yy);
+        }
+    }
+}
+
+
+void dibujar_poligono_traslacion()
+{
+
+    glClear (GL_COLOR_BUFFER_BIT);
+    glColor3f (0.0, 0.0, 1.0);
+    int tt,pp;
+    cout<<"indica coordenadas de traslacion"<<endl;
+    cin>>tt>>pp;
+    matriz t =traslacion(tt,pp);
+    dibujar_matr(t ,vertices->size());
+    glFlush();
+
+}
+
+void dibujar_poligono_rotacion()
+{
+    glClear (GL_COLOR_BUFFER_BIT);
+    glColor3f (0.0, 0.0, 1.0);
+    int tt;
+    cout<<"indica angulo de rotacion en sexagesimales"<<endl;
+    cin>>tt;
+    matriz t =rotacion(tt);
+    dibujar_matr(t ,vertices->size());
+    glFlush();
+
+}
+
+void dibujar_poligono_escalado()
+{
+
+    glClear (GL_COLOR_BUFFER_BIT);
+    glColor3f (0.0, 0.0, 1.0);
+
+    int tt,pp;
+    cout<<"indica coordenadas de escalado"<<endl;
+    cin>>tt>>pp;
+    matriz t =escalado(tt,pp);
+    dibujar_matr(t ,vertices->size());
+    glFlush();
+
+}
+
+
 int main(int argc, char **argv)
 {
  glutInit(&argc, argv);
@@ -438,10 +710,24 @@ int main(int argc, char **argv)
  init();
 
  //glutDisplayFunc(dibuja_linea);
- //glutDisplayFunc(dibuja_poligono);
+ glutDisplayFunc(dibuja_poligono);
  //glutDisplayFunc(dibuja_linea);
  //glutDisplayFunc(dibuja_circulo);
- glutDisplayFunc(dibuja_elipse);
+ glutReshapeFunc(reshape);
+
+ init();
+ glutCreateWindow("Dibujos con punto-medio");
+
+ /*
+  * Transformaciones en 2D
+  */
+
+ //glutDisplayFunc(dibujar_poligono_traslacion);
+ glutDisplayFunc(dibujar_poligono_rotacion);
+ //glutDisplayFunc(dibujar_poligono_escalado);
+
+
+ //glutDisplayFunc(dibuja_elipse);
  //glutDisplayFunc(relleno_convexo);
  //glutDisplayFunc(relleno_concavo);
  glutReshapeFunc(reshape);
