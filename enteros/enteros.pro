@@ -10,4 +10,10 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    matriz.cpp
+    poligono.cpp \
+    lamatriz.cpp
+
+HEADERS += \
+    poligono.h \
+    linea.h \
+    lamatriz.h
