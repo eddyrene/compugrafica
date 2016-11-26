@@ -20,7 +20,7 @@ class lamatriz{
 
         public:
 
-        lamatriz() { filas =0 ; col =0; vec_puntos = new points_float();}
+        lamatriz() { filas =0 ; col =0; vec_puntos = new points_float(); this->matriz_identidad();}
         matriz getmatriz(){return v;}
         void setmatriz(matriz b){v=b;}
         matriz get_identidad(){return ide;}
@@ -111,17 +111,18 @@ class lamatriz{
                          cin>>v[i][j];}
             }
         }
-        void llenar_ceros(int a , int b)
+        void llenar_ceros(matriz &mat, int a , int b)
         {
             for(int i=0;i<a;i++)
             {
                 for(int j=0;j<b;j++){
-                        v[i][j]=0; }
+                        mat[i][j]=0; }
             }
 
         }
         void multiplicacion(matriz A,int m,int n, matriz B ,int o)
         {
+            result.clear();
             crear_matriz(result,m,o);
             //llenar_ceros(m,o);
             for(int i=0;i<m;i++)
@@ -138,8 +139,7 @@ class lamatriz{
             result.resize(m);
             for(int i=0;i<m;i++)
                 result[i].resize(o);
-
-
+            llenar_ceros(result,filas,n);
             for(int i=0;i<m;i++)
                 for(int j=0;j<n;j++)
                     for(int k=0;k<o;k++)
@@ -164,7 +164,7 @@ class lamatriz{
 
         points_float * matriz_to_vertices()
         {
-
+            vec_puntos->clear();
             for(int i=0;i<filas;i++)
             {
                 vec_puntos->push_back(make_pair(result[i][0],result[i][1]));
@@ -175,7 +175,7 @@ class lamatriz{
 
         matriz multiplicacion2(matriz &A,int N, matriz &B)
         {
-            double SM=32;
+           /* double SM=32;
             matriz res;
             crear_matriz(N,N);
             llenar_ceros(N,N);
@@ -186,11 +186,12 @@ class lamatriz{
                             for	(int j=j1;j<j1+SM&&j<N;j++)
                                 for	(int k=k1;k<k1+SM&&k<N;k++)
                                     res[i][j]+=A[i][k]*B[k][j];
-            return res;
+            return res;*/
         }
 
         void matriz_traslacion(int a, int b)
         {
+            ide.clear();
             this->matriz_identidad();
             this->ide[2][0]=a;
             this->ide[2][1]=b;
@@ -199,6 +200,7 @@ class lamatriz{
 
         void  matriz_rotacion(double a)
         {
+            ide.clear();
             this->matriz_identidad();
             float ang=(float)(a)*3.14159f/180.0f;
             this->ide[0][0]=cos(ang);
@@ -209,6 +211,7 @@ class lamatriz{
         }
         void matriz_escalado(int tx, int ty)
         {
+            ide.clear();
             matriz_identidad();
             ide[0][0]=tx;
             ide[1][1]=ty;

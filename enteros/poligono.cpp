@@ -62,15 +62,15 @@ void poligono::circunscrito()
 void poligono::traslacion(int tx, int ty)
 {
     int filas= ivertices->size();
-
+    cout<<"filas:"<<filas<<endl;
     matri->matriz_traslacion(tx,ty);
     matri->vertices_matriz(ivertices); // de vector a matriz
 
     matri->rmultiplicacion(filas,3,3);
 
-    fvertices =  matri->matriz_to_vertices();
+    ivertices =  matri->matriz_to_vertices();
+    //ivertices=fvertices;}
 }
-
 void poligono::rotacion(double a)
 {
     int filas= ivertices->size();
@@ -78,7 +78,8 @@ void poligono::rotacion(double a)
     matri->vertices_matriz(ivertices);
 
     matri->rmultiplicacion(filas,3,3);
-    fvertices = matri->matriz_to_vertices();
+    ivertices = matri->matriz_to_vertices();
+    //ivertices=fvertices;
 }
 
 void poligono::escalado(int tx, int ty)
@@ -89,26 +90,27 @@ void poligono::escalado(int tx, int ty)
     matri->vertices_matriz(ivertices);
 
     matri->rmultiplicacion(filas,3,3);
-    fvertices = matri->matriz_to_vertices();
+    ivertices = matri->matriz_to_vertices();
+    //ivertices=fvertices;
 }
 
 
 void poligono::redibujar()
 {
     linea * l =new linea;
-    for( int i =0;i<fvertices->size() ;i++)
+    for( int i =0;i<ivertices->size() ;i++)
     {
-        if(i==fvertices->size()-1)
+        if(i==ivertices->size()-1)
         {
-            l->setvalues(fvertices->at(i).first,fvertices->at(i).second,fvertices->at(0).first,fvertices->at(0).second);
+            l->setvalues(ivertices->at(i).first,ivertices->at(i).second,ivertices->at(0).first,ivertices->at(0).second);
             l->pm_float();
         }
         else
         {
-            int x=fvertices->at(i).first;
-            int y=fvertices->at(i).second;
-            int xx=fvertices->at(i+1).first;
-            int  yy=fvertices->at(i+1).second;
+            int x=ivertices->at(i).first;
+            int y=ivertices->at(i).second;
+            int xx=ivertices->at(i+1).first;
+            int  yy=ivertices->at(i+1).second;
             l->setvalues(x,y,xx,yy);
             l->pm_float();
         }

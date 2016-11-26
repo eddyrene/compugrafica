@@ -124,27 +124,105 @@ void dibujar_matr(matriz & m, int f )
 
 void display()
 {
-    poligono * poli = new poligono();
+
     glClear (GL_COLOR_BUFFER_BIT);
     glColor3f (0.0, 0.0, 1.0);
-    cout<<"Ingrese LADOS y  RADIO "<<endl;
-    int a , b; cin>>a>> b;
-    poli->setlado(a);
-    poli->setradio(b);
-    poli->normal();
-    glFlush();
-    glClear (GL_COLOR_BUFFER_BIT);
 
+    int salir=0, opcion;
+    while (salir==0)
+    {
+        //cout<<" Poligono Estático "<<endl;
+        cout<<"Ingrese la opcion deseada"<<endl;
+        cout<<" 1) Polígono Estatico , ( lados, radio)"<<endl;
+        cout<<" 2) Poligono con mouse"<<endl;
+        cout<<" ESC) Salir"<<endl;
+        cin>>opcion;
+        switch(opcion)
+        {
+            case 1:
+            {
+                int lados,radio;
+                poligono * poli = new poligono();
+                cout<<"Numero de lados: "<<endl;
+                cin >> lados;
+                cout<<"Radio: "<<endl;
+                cin>>radio;
+                poli->setlado(lados);
+                poli->setradio(radio);
+                poli->normal();
+                glFlush();
 
-    cout<<"ingrese coordenadas para traslacion x:  y: "<<endl;
-    /*****************/
-    int xt,yt;
-    xt=yt=0;
-    cin>>xt>>yt;
-    cout<<"coordenadas a mover"<<xt<<" "<<yt<<endl;
-    poli->escalado(1,5);
-    poli->redibujar();
-    glFlush();
+                int salir2=0, opcion2;
+
+                while(salir2 == 0)
+                {
+                    cout<<"Transformaciones"<<endl;
+                    cout<<"1) Traslacion"<<endl;
+                    cout<<"2) Rotacion"<<endl;
+                    cout<<"3) Escalado "<<endl;
+                    cout<<"ESC) Salir"<<endl;
+                    cin>>opcion2;
+                    switch (opcion2) {
+                    case 1:
+                    {
+                        int xt,yt;
+                        cout<<"Traslacion"<<endl;
+                        cout<<"Coordeanada X: ";
+                        cin>>xt;
+                        cout<<"Coordeanada Y: ";
+                        cin>>yt;
+
+                        glClear (GL_COLOR_BUFFER_BIT);
+                        poli->traslacion(xt,yt);
+                        poli->redibujar();
+                        glFlush();
+                    }
+                        break;
+
+                    case 2:
+                    {
+                        double ag;
+                        cout<<"Rotacion"<<endl;
+                        cout<<"Angulo: ";
+                        cin>>ag;
+                        glClear (GL_COLOR_BUFFER_BIT);
+                        poli->rotacion(ag);
+                        poli->redibujar();
+                        glFlush();
+                    }
+                           break;
+                    case 3:
+                    {
+                        int xt,yt;
+                        cout<<"Escalado"<<endl;
+                        cout<<"Coordeanada X: ";
+                        cin>>xt;
+                        cout<<"Coordeanada Y: ";
+                        cin>>yt;
+
+                        glClear (GL_COLOR_BUFFER_BIT);
+                        poli->escalado(xt,yt);
+                        poli->redibujar();
+                        glFlush();
+                    }
+                           break;
+                    case 27:
+                        salir2=1;
+                    }
+
+                }
+        }
+
+            break;
+
+            case 2:
+                cout<<"Esta funcion aun no esta"<<endl;
+            break;
+
+            case 27:
+                salir=1;
+        }
+    }
 }
 
 int main(int argc, char **argv)
@@ -153,28 +231,9 @@ int main(int argc, char **argv)
  glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
  glutInitWindowPosition(800, 50);
  glutInitWindowSize(winWidth, winHeight);
- glutCreateWindow("Dibujos con punto-medio");
+ glutCreateWindow("Traslacion de Poligono Estático");
  init();
- //glutDisplayFunc(dibuja_linea);
-
  glutDisplayFunc(display);
- //glutDisplayFunc(dibuja_linea);
- //glutDisplayFunc(dibuja_circulo);
- //glutReshapeFunc(reshape);
-
- //init();
- //glutCreateWindow("Dibujos con punto-medio");
-
- /*
-  * Transformaciones en 2D
-  */
-
- //glutDisplayFunc(dibujar_poligono_traslacion);
-// glutDisplayFunc(dibujar_poligono_rotacion);
- //glutDisplayFunc(dibujar_poligono_escalado);
- //glutDisplayFunc(dibuja_elipse);
- //glutDisplayFunc(relleno_convexo);
- //glutDisplayFunc(relleno_concavo);
  glutReshapeFunc(reshape);
  glutMainLoop();
  system("PAUSE");
