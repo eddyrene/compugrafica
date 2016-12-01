@@ -39,12 +39,18 @@ GLsizei winWidth = 640, winHeight = 480;
 void reshape(int width, int height)
 {
  glViewport(0, 0, winWidth, winHeight);
-
+/*
  glMatrixMode(GL_PROJECTION);
  glLoadIdentity();
  gluOrtho2D(-winWidth/2, winWidth/2, -winHeight/2, winHeight/2);
  glMatrixMode(GL_MODELVIEW);
  glLoadIdentity();
+
+*/
+ glMatrixMode(GL_PROJECTION);
+ glLoadIdentity();
+ gluOrtho2D(0,winWidth,0,winHeight);
+ glMatrixMode(GL_MODELVIEW);
 
 }
 
@@ -117,26 +123,125 @@ void dibujar_matr(matriz & m, int f )
     glColor3f (0.0, 1.0, 1.0);
     scanfill(4,puntoss);
     glFlush();
+}
+*/
+poligono * polin=new poligono();
+
+void mouse(int button, int state, int x, int y)
+{
+
+    switch (button) {
+        case GLUT_LEFT_BUTTON:
+            if (state == GLUT_DOWN)
+            {
+               // cout<<"coordenada"<<x-winWidth/2<<" "<<winHeight/2-y<<endl;
+                cout<<"coordenada"<<x<<" "<<winHeight-y<<endl;
+                //polin->insert_vertice(x-winWidth/2,winHeight/2-y);
+                polin->insert_vertice(x,winHeight-y);
+                glClear (GL_COLOR_BUFFER_BIT);
+                polin->redibujar_mouse();
+                glFlush();
+                // glutIdleFunc(spinDisplay);
+            }
+            break;
+        case GLUT_RIGHT_BUTTON:
+            if (state == GLUT_DOWN)
+            {
+                glClear (GL_COLOR_BUFFER_BIT);
+                 //polin->ivertices->push_back(make_pair(polin->ivertices->at(0).first,polin->ivertices->at(0).second));
+                 polin->redibujar();
+                 glFlush();
+                // cout<<"cuando termine presione  0"<<endl;
+                 int salir2=0, opcion2;
+                 while(salir2 == 0)
+                 {
+                     cout<<"Transformaciones"<<endl;
+                     cout<<"1) Traslacion"<<endl;
+                     cout<<"2) Rotacion"<<endl;
+                     cout<<"3) Escalado "<<endl;
+                     cout<<"ESC) Salir"<<endl;
+                     cin>>opcion2;
+                     switch (opcion2) {
+                     case 1:
+                     {
+                         int xt,yt;
+                         cout<<"Traslacion"<<endl;
+                         cout<<"Coordeanada X: ";
+                         cin>>xt;
+                         cout<<"Coordeanada Y: ";
+                         cin>>yt;
+
+                         glClear (GL_COLOR_BUFFER_BIT);
+                         polin->traslacion(xt,yt);
+                         polin->redibujar();
+                         glFlush();
+                     }
+                         break;
+
+                     case 2:
+                     {
+                         double ag;
+                         cout<<"Rotacion"<<endl;
+                         cout<<"Angulo: ";
+                         cin>>ag;
+                         glClear (GL_COLOR_BUFFER_BIT);
+                         polin->rotacion_compuesta(ag);
+                         polin->redibujar();
+                         glFlush();
+                     }
+                            break;
+                     case 3:
+                     {
+                         int xt,yt;
+                         cout<<"Escalado"<<endl;
+                         cout<<"Coordeanada X: ";
+                         cin>>xt;
+                         cout<<"Coordeanada Y: ";
+                         cin>>yt;
+
+                         glClear (GL_COLOR_BUFFER_BIT);
+                         polin->escalado_compuesto(xt,yt);
+                         polin->redibujar();
+                         glFlush();
+                     }
+                         break;
+                     case 0:
+                         salir2=1;
+                     }
+                 }
+            }
+                // glutIdleFunc(NULL);
+            break;
+        case GLUT_MIDDLE_BUTTON:
+            if (state == GLUT_DOWN)
+                return;
+                // glutIdleFunc(NULL);
+         break;
+      default:
+         break;
+   }
+    /*glColor3d(1,0,1);
+    glBegin(GL_POINTS);
+        glVertex2d(0,0);
+    glEnd();*/
 
 }
-
-*/
-
-void display()
+void display1()
 {
 
     glClear (GL_COLOR_BUFFER_BIT);
     glColor3f (0.0, 0.0, 1.0);
 
-    int salir=0, opcion;
-    while (salir==0)
+    int salir=1, opcion;
+    while (salir!=0)
     {
         //cout<<" Poligono Estático "<<endl;
         cout<<"Ingrese la opcion deseada"<<endl;
         cout<<" 1) Polígono Estatico , ( lados, radio)"<<endl;
-        cout<<" 2) Poligono con mouse"<<endl;
+        //cout<<" 2) Poligono con mouse"<<endl;
         cout<<" ESC) Salir"<<endl;
         cin>>opcion;
+       // cout<<opcion<<endl;
         switch(opcion)
         {
             case 1:
@@ -150,6 +255,7 @@ void display()
                 poli->setlado(lados);
                 poli->setradio(radio);
                 poli->normal();
+                poli->rellenar();
                 glFlush();
 
                 int salir2=0, opcion2;
@@ -178,7 +284,6 @@ void display()
                         glFlush();
                     }
                         break;
-
                     case 2:
                     {
                         double ag;
@@ -186,7 +291,7 @@ void display()
                         cout<<"Angulo: ";
                         cin>>ag;
                         glClear (GL_COLOR_BUFFER_BIT);
-                        poli->rotacion(ag);
+                        poli->rotacion_compuesta(ag);
                         poli->redibujar();
                         glFlush();
                     }
@@ -205,25 +310,24 @@ void display()
                         poli->redibujar();
                         glFlush();
                     }
-                           break;
+                        break;
                     case 27:
                         salir2=1;
                     }
-
                 }
         }
-
-            break;
-
-            case 2:
-                cout<<"Esta funcion aun no esta"<<endl;
-            break;
-
-            case 27:
-                salir=1;
+        case 0:
+            salir=0;
         }
     }
+    return;
 }
+
+void display2()
+{
+
+}
+
 
 int main(int argc, char **argv)
 {
@@ -233,9 +337,11 @@ int main(int argc, char **argv)
  glutInitWindowSize(winWidth, winHeight);
  glutCreateWindow("Traslacion de Poligono Estático");
  init();
- glutDisplayFunc(display);
+ glutMouseFunc(mouse);
  glutReshapeFunc(reshape);
+ //glutDisplayFunc(display1);
+ glutDisplayFunc(display2);
  glutMainLoop();
- system("PAUSE");
+system("PAUSE");
  return 0;
 }

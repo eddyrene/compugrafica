@@ -14,10 +14,13 @@ class poligono
 private:
     int lados;
     int radio;
-    points_float * ivertices, *fvertices;
+    //points_float * ivertices, *fvertices;
     linea * milinea;
     lamatriz * matri;
 public:
+
+    points_float * ivertices, *fvertices;
+
     poligono();
     void setlado( int l){lados=l;}
     void setradio (int r){radio=r;}
@@ -28,8 +31,13 @@ public:
     void circunscrito();
     void traslacion(int tx, int ty);
     void rotacion(double a);
+    void rotacion_compuesta(double a);
     void escalado(int tx, int ty);
+    void escalado_compuesto(int tx, int ty);
     void redibujar();
+    void redibujar_mouse();
+    void rellenar();
+    void insert_vertice(int x, int y);
 
     /*void dibujar_normal();
     void dibujar_circu();*/

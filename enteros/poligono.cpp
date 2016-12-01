@@ -82,6 +82,22 @@ void poligono::rotacion(double a)
     //ivertices=fvertices;
 }
 
+void poligono::rotacion_compuesta(double a)
+{
+    int xc,yc=0;
+    int filas= ivertices->size();
+    for(int i=0;i<filas;i++)
+    {
+        xc+=ivertices->at(i).first;
+        yc+=ivertices->at(i).second;
+    }
+    xc=xc/filas;
+    yc=yc/filas;
+    traslacion(-xc,-yc);
+    rotacion(a);
+    traslacion(xc,yc);
+}
+
 void poligono::escalado(int tx, int ty)
 {
 
@@ -91,7 +107,22 @@ void poligono::escalado(int tx, int ty)
 
     matri->rmultiplicacion(filas,3,3);
     ivertices = matri->matriz_to_vertices();
-    //ivertices=fvertices;
+}
+
+void poligono::escalado_compuesto(int tx, int ty)
+{
+    int xc,yc=0;
+    int filas= ivertices->size();
+    for(int i=0;i<filas;i++)
+    {
+        xc+=ivertices->at(i).first;
+        yc+=ivertices->at(i).second;
+    }
+    xc=xc/filas;
+    yc=yc/filas;
+    traslacion(-xc,-yc);
+    escalado(tx,ty);
+    traslacion(xc,yc);
 }
 
 
@@ -115,26 +146,40 @@ void poligono::redibujar()
             l->pm_float();
         }
     }
+    //rellenar();
+}
+void poligono:: redibujar_mouse()
+{
+    linea * l =new linea;
+    for( int i =0;i<ivertices->size() ;i++)
+    {
+        if(i==ivertices->size()-1)
+        {
+            return;
+            //l->setvalues(ivertices->at(i).first,ivertices->at(i).second,ivertices->at(0).first,ivertices->at(0).second);
+            //l->pm_float();
+        }
+        else
+        {
+            int x=ivertices->at(i).first;
+            int y=ivertices->at(i).second;
+            int xx=ivertices->at(i+1).first;
+            int  yy=ivertices->at(i+1).second;
+            l->setvalues(x,y,xx,yy);
+            l->pm_float();
+        }
+    }
+    //rellenar();
 }
 
-/*
-void poligono::dibujar_normal()
+void poligono::rellenar()
 {
-    glClear (GL_COLOR_BUFFER_BIT);
-    glColor3f (0.0, 0.0, 1.0);
-    cout<<"Ingrese LADOS y  RADIO "<<endl;
-    cin>>lados>>radio;
-    normal();
-    glFlush();
+
 }
 
-void poligono::dibujar_circu()
+void poligono::insert_vertice( int x, int y)
 {
-    glClear (GL_COLOR_BUFFER_BIT);
-    glColor3f (0.0, 0.0, 1.0);
-    cout<<"Ingrese LADOS y  RADIO "<<endl;
-    cin>>lados>>radio;
-    circunscrito();
-    glFlush();
+    ivertices->push_back(make_pair(x,y));
 }
-*/
+
+
