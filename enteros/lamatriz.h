@@ -117,7 +117,6 @@ class lamatriz{
                 for(int j=0;j<b;j++){
                         mat[i][j]=0; }
             }
-
         }
         void multiplicacion(matriz A,int m,int n, matriz B ,int o)
         {
@@ -208,7 +207,7 @@ class lamatriz{
             this->ide[1][1]=cos(ang);
             this->imprimir_identidad();
         }
-        void matriz_escalado(int tx, int ty)
+        void matriz_escalado(float tx, float ty)
         {
             ide.clear();
             matriz_identidad();
@@ -216,8 +215,6 @@ class lamatriz{
             ide[1][1]=ty;
             this->imprimir_identidad();
         }
-
-
 };
 
 #endif

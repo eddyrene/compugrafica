@@ -12,7 +12,6 @@ void poligono::normal()
 {
     GLfloat angulo1=0.0;
     GLfloat angulo2=0.0;
-
     GLfloat grados = 360/(GLfloat)lados;
     for (GLfloat i=0; i<360; i+=grados)
     {
@@ -58,7 +57,7 @@ void poligono::circunscrito()
      glEnd();
 }
 
-void poligono::traslacion(int tx, int ty)
+void poligono::traslacion(float tx, float ty)
 {
     int filas= ivertices->size();
     cout<<"filas:"<<filas<<endl;
@@ -97,7 +96,7 @@ void poligono::rotacion_compuesta(double a)
     traslacion(xc,yc);
 }
 
-void poligono::escalado(int tx, int ty)
+void poligono::escalado(float tx, float ty)
 {
 
     int filas= ivertices->size();
@@ -108,9 +107,9 @@ void poligono::escalado(int tx, int ty)
     ivertices = matri->matriz_to_vertices();
 }
 
-void poligono::escalado_compuesto(int tx, int ty)
+void poligono::escalado_compuesto(float tx, float ty)
 {
-    int xc,yc=0;
+    float xc,yc=0;
     int filas= ivertices->size();
     for(int i=0;i<filas;i++)
     {

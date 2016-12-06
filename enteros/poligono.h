@@ -32,11 +32,11 @@ public:
 
     void normal();
     void circunscrito();
-    void traslacion(int tx, int ty);
+    void traslacion(float tx, float ty);
     void rotacion(double a);
     void rotacion_compuesta(double a);
-    void escalado(int tx, int ty);
-    void escalado_compuesto(int tx, int ty);
+    void escalado(float tx, float ty);
+    void escalado_compuesto(float tx, float ty);
     void redibujar();
     void redibujar_mouse();
     void rellenar();

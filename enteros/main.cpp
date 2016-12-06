@@ -385,19 +385,6 @@ void relleno_concavo()
            puntos[i]=make_pair(polin->ivertices->at(i).first,polin->ivertices->at(i).second);
            cout<<puntos[i].first<< ", "<<puntos[i].second<<endl;
        }
-
-      /* puntos[0]=make_pair(129,124);
-       puntos[1]=make_pair(156,30);
-       puntos[2]=make_pair(99,77);
-       puntos[3]=make_pair(22,10);
-       puntos[4]=make_pair(26,118);*/
-       /*
-       puntos[0]=make_pair(129,124);
-       puntos[1]=make_pair(156,30);
-       puntos[2]=make_pair(99,77);
-       puntos[3]=make_pair(22,10);
-       puntos[4]=make_pair(26,118);
-       */
        glClear (GL_COLOR_BUFFER_BIT);
        glColor3f (0.0, 1.0, 1.0);
        //scanfill(polin->ivertices->size(),puntos);
@@ -407,14 +394,11 @@ void relleno_concavo()
        } catch (const exception  & e) {
         cout<<"error aqui: "<< e.what() <<endl;
        }
-
-
       // glFlush();
  }
 
 void mouse(int button, int state, int x, int y)
 {
-
     switch (button) {
         case GLUT_LEFT_BUTTON:
             if (state == GLUT_DOWN)
@@ -480,7 +464,7 @@ void mouse(int button, int state, int x, int y)
                             break;
                      case 3:
                      {
-                         int xt,yt;
+                         float xt,yt;
                          cout<<"Escalado"<<endl;
                          cout<<"Coordeanada X: ";
                          cin>>xt;
@@ -493,7 +477,7 @@ void mouse(int button, int state, int x, int y)
                          glFlush();
                      }
                          break;
-                     case 0:
+                     case 4:
                          salir2=1;
                      }
                  }
