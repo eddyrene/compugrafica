@@ -412,7 +412,6 @@ void relleno_concavo()
       // glFlush();
  }
 
-
 void mouse(int button, int state, int x, int y)
 {
 
@@ -458,10 +457,10 @@ void mouse(int button, int state, int x, int y)
                          cin>>xt;
                          cout<<"Coordeanada Y: ";
                          cin>>yt;
-
                          glClear (GL_COLOR_BUFFER_BIT);
                          polin->traslacion(xt,yt);
                          polin->redibujar();
+                         relleno_concavo();
                          glFlush();
                      }
                          break;
@@ -475,6 +474,7 @@ void mouse(int button, int state, int x, int y)
                          glClear (GL_COLOR_BUFFER_BIT);
                          polin->rotacion_compuesta(ag);
                          polin->redibujar();
+                         relleno_concavo();
                          glFlush();
                      }
                             break;
@@ -489,6 +489,7 @@ void mouse(int button, int state, int x, int y)
                          glClear (GL_COLOR_BUFFER_BIT);
                          polin->escalado_compuesto(xt,yt);
                          polin->redibujar();
+                         relleno_concavo();
                          glFlush();
                      }
                          break;
