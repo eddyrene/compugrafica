@@ -13,7 +13,6 @@ typedef vector<pair<float,float> > points_float;
 
 class lamatriz{
     private:
-
         matriz v,ide, result;
         int filas, col;
         points_float * vec_puntos;

@@ -28,7 +28,6 @@ void poligono::normal()
        //cout<<"cc: " << x <<" "<<y<<" "<<x2<<" "<<y2<<endl;
     }
 }
-
 void poligono::circunscrito()
 {
      GLfloat angulo1=0.0;

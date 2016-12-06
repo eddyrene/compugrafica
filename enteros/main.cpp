@@ -5,7 +5,7 @@
 
 using namespace std;
 /*
- * Nombre: Eddy Rene Caceres Huacarpuma
+ * Nombre: Eddy Rene Caceres Huacarpuma TUX
  *
  * Funciones:
  * Poligono circunscrito.
@@ -59,32 +59,10 @@ void init()
      glClearColor(0,0,0,0);
 }
 
-/*
-void relleno_convexo()
-{
-    punto * puntos=new punto[4];
-    puntos[0]=make_pair(0,0);
-    puntos[1]=make_pair(0,200);
-    puntos[2]=make_pair(200,200);
-    puntos[3]=make_pair(200,0);
-    glClear (GL_COLOR_BUFFER_BIT);
-    glColor3f (0.0, 1.0, 1.0);
-    scanfill(4,puntos);
-    glFlush();
-}
-void relleno_concavo(){
 
-       punto * puntos=new punto[5];
-       puntos[0]=make_pair(160,120);
-       puntos[1]=make_pair(180,5);
-       puntos[2]=make_pair(100,70);
-       puntos[3]=make_pair(10,20);
-       puntos[4]=make_pair(20,120);
-       glClear (GL_COLOR_BUFFER_BIT);
-       glColor3f (0.0, 1.0, 1.0);
-       scanfill(5,puntos);
-       glFlush();
- }
+
+/*
+
 void dibujar_matr(matriz & m, int f )
 {
 
@@ -127,105 +105,7 @@ void dibujar_matr(matriz & m, int f )
 */
 poligono * polin=new poligono();
 
-void mouse(int button, int state, int x, int y)
-{
 
-    switch (button) {
-        case GLUT_LEFT_BUTTON:
-            if (state == GLUT_DOWN)
-            {
-               // cout<<"coordenada"<<x-winWidth/2<<" "<<winHeight/2-y<<endl;
-                cout<<"coordenada"<<x<<" "<<winHeight-y<<endl;
-                //polin->insert_vertice(x-winWidth/2,winHeight/2-y);
-                polin->insert_vertice(x,winHeight-y);
-                glClear (GL_COLOR_BUFFER_BIT);
-                polin->redibujar_mouse();
-                glFlush();
-                // glutIdleFunc(spinDisplay);
-            }
-            break;
-        case GLUT_RIGHT_BUTTON:
-            if (state == GLUT_DOWN)
-            {
-                glClear (GL_COLOR_BUFFER_BIT);
-                 //polin->ivertices->push_back(make_pair(polin->ivertices->at(0).first,polin->ivertices->at(0).second));
-                 polin->redibujar();
-                 glFlush();
-                // cout<<"cuando termine presione  0"<<endl;
-                 int salir2=0, opcion2;
-                 while(salir2 == 0)
-                 {
-                     cout<<"Transformaciones"<<endl;
-                     cout<<"1) Traslacion"<<endl;
-                     cout<<"2) Rotacion"<<endl;
-                     cout<<"3) Escalado "<<endl;
-                     cout<<"ESC) Salir"<<endl;
-                     cin>>opcion2;
-                     switch (opcion2) {
-                     case 1:
-                     {
-                         int xt,yt;
-                         cout<<"Traslacion"<<endl;
-                         cout<<"Coordeanada X: ";
-                         cin>>xt;
-                         cout<<"Coordeanada Y: ";
-                         cin>>yt;
-
-                         glClear (GL_COLOR_BUFFER_BIT);
-                         polin->traslacion(xt,yt);
-                         polin->redibujar();
-                         glFlush();
-                     }
-                         break;
-
-                     case 2:
-                     {
-                         double ag;
-                         cout<<"Rotacion"<<endl;
-                         cout<<"Angulo: ";
-                         cin>>ag;
-                         glClear (GL_COLOR_BUFFER_BIT);
-                         polin->rotacion_compuesta(ag);
-                         polin->redibujar();
-                         glFlush();
-                     }
-                            break;
-                     case 3:
-                     {
-                         int xt,yt;
-                         cout<<"Escalado"<<endl;
-                         cout<<"Coordeanada X: ";
-                         cin>>xt;
-                         cout<<"Coordeanada Y: ";
-                         cin>>yt;
-
-                         glClear (GL_COLOR_BUFFER_BIT);
-                         polin->escalado_compuesto(xt,yt);
-                         polin->redibujar();
-                         glFlush();
-                     }
-                         break;
-                     case 0:
-                         salir2=1;
-                     }
-                 }
-            }
-                // glutIdleFunc(NULL);
-            break;
-        case GLUT_MIDDLE_BUTTON:
-            if (state == GLUT_DOWN)
-                return;
-                // glutIdleFunc(NULL);
-         break;
-      default:
-         break;
-   }
-    /*glColor3d(1,0,1);
-    glBegin(GL_POINTS);
-        glVertex2d(0,0);
-    glEnd();*/
-
-}
 void display1()
 {
 
@@ -277,7 +157,6 @@ void display1()
                         cin>>xt;
                         cout<<"Coordeanada Y: ";
                         cin>>yt;
-
                         glClear (GL_COLOR_BUFFER_BIT);
                         poli->traslacion(xt,yt);
                         poli->redibujar();
@@ -304,7 +183,6 @@ void display1()
                         cin>>xt;
                         cout<<"Coordeanada Y: ";
                         cin>>yt;
-
                         glClear (GL_COLOR_BUFFER_BIT);
                         poli->escalado(xt,yt);
                         poli->redibujar();
@@ -328,7 +206,313 @@ void display2()
 
 }
 
+typedef pair<int, int > punto;
+typedef struct nodo{
+    int  yalto;
+    float xinter, difx;
+    nodo * siguiente;
+}nodo;
 
+void insert_nodo(nodo * lista, nodo * pnodo)
+{
+    nodo * p , * q = lista;
+    p=q->siguiente;
+    while(p!=NULL)
+    {
+        if(pnodo->xinter<p->xinter)
+            p=NULL;
+        else {
+            q=p;
+            p=p->siguiente;
+        }
+    }
+    pnodo->siguiente = q->siguiente;
+    q->siguiente=pnodo;
+}
+int siguiente_y(int k,int cnt , punto * pts)
+{
+    int j;
+    if( (k+1)>(cnt-1))
+        j=0;
+    else
+        j=k+1;
+    while(pts[k].second == pts[j].second)
+        if((j+1) > (cnt-1))
+          j=0;
+        else
+            j++;
+    return pts[j].second;
+}
+
+void makeEdgeRec(punto lower, punto upper, int yComp, nodo * pnodo, nodo * nodos[])
+{
+    pnodo->difx=(float)(upper.first-lower.first)/ (upper.second-lower.second);
+    pnodo->xinter=lower.first;
+    if(upper.second<yComp)
+        pnodo->yalto=upper.second-1;
+    else
+        pnodo->yalto=upper.second;
+    insert_nodo(nodos[lower.second],pnodo);
+}
+
+void build_TB(int cnt, punto * pts, nodo * nodos[])
+{
+    nodo * pnodo;
+    punto p1,p2;
+    int i, yprev = pts[cnt-2].second;
+
+    p1.first=pts[cnt-1].first;
+    p1.second= pts[cnt-1].second;
+    for(i=0;i<cnt;i++)
+    {
+        p2=pts[i];
+        if(p1.second != p2.second)
+        {
+            pnodo = (nodo *) malloc (sizeof(nodo) );
+            if(p1.second < p2.second)
+                makeEdgeRec(p1,p2,siguiente_y(i,cnt,pts),pnodo,nodos);
+            else
+                makeEdgeRec(p2,p1,yprev,pnodo,nodos);
+        }
+        yprev=p1.second;
+        p1=p2;
+    }
+}
+void build_LBA (int scan, nodo *  active, nodo * nodos[])
+{
+    nodo * p, *q;
+    p=nodos[scan]->siguiente;
+    while(p)
+    {
+        q=p->siguiente;
+        insert_nodo(active,p);
+        p=q;
+    }
+}
+void fillScan (int scan, nodo * active)
+{
+    nodo * p1, *p2;
+    int i;
+    p1=active->siguiente;
+    while(p1){
+        p2=p1->siguiente;
+        for(i=p1->xinter;i<p2->xinter;i++)
+        {
+            glBegin(GL_POINTS);
+               glVertex2d(i, scan);
+            glEnd();
+        }
+        p1 = p2->siguiente;
+    }
+}
+void deleteAfter(nodo * q)
+{
+    nodo *p=q->siguiente;
+    q->siguiente = p->siguiente;
+    free ( p );
+}
+void actualiza_LBA (int scan, nodo * active)
+{
+    nodo * q = active;
+    nodo * p = active->siguiente;
+    while(p)
+    {
+        if(scan >= p->yalto){
+            p=p->siguiente;
+            deleteAfter(q);
+        }
+        else{
+            p->xinter=p->xinter+p->difx;
+            q=p;
+            p=p->siguiente;
+        }
+    }
+}
+
+void reordena_LBA(nodo * active)
+{
+    nodo * q, *p = active->siguiente;
+    active->siguiente=NULL;
+    while(p){
+        q=p->siguiente;
+        insert_nodo(active,p);
+        p=q;
+    }
+}
+
+void scanfill(int cnt,  punto * pts)
+{
+    nodo * nodos[winHeight], *active;
+    int i, scan;
+    for(i=0;i<winHeight;i++){
+        nodos[i]=(nodo *) malloc(sizeof(nodo));
+        nodos[i]->siguiente=NULL;
+    }
+    build_TB(cnt,pts,nodos);
+    active = (nodo *) malloc(sizeof(nodo));
+    active->siguiente=NULL;
+    for(scan=0;scan<winHeight;scan++)
+    {
+        build_LBA(scan,active,nodos);
+        if(active->siguiente)
+        {
+            fillScan(scan,active);
+            actualiza_LBA(scan,active);
+            reordena_LBA(active);
+        }
+    }
+}
+void relleno_convexo()
+{
+    punto * puntos=new punto[4];
+    puntos[0]=make_pair(0,0);
+    puntos[1]=make_pair(0,200);
+    puntos[2]=make_pair(200,200);
+    puntos[3]=make_pair(200,0);
+    glClear (GL_COLOR_BUFFER_BIT);
+    glColor3f (0.0, 1.0, 1.0);
+    scanfill(4,puntos);
+    glFlush();
+}
+
+void relleno_concavo()
+{
+    cout<<"tamaño:"<<polin->ivertices->size()<<endl;
+       punto * puntos=new punto[polin->ivertices->size()];//;polin->ivertices->size()];
+
+       for(int i=0;i< polin->ivertices->size();i++)
+       {
+           puntos[i]=make_pair(polin->ivertices->at(i).first,polin->ivertices->at(i).second);
+           cout<<puntos[i].first<< ", "<<puntos[i].second<<endl;
+       }
+
+      /* puntos[0]=make_pair(129,124);
+       puntos[1]=make_pair(156,30);
+       puntos[2]=make_pair(99,77);
+       puntos[3]=make_pair(22,10);
+       puntos[4]=make_pair(26,118);*/
+       /*
+       puntos[0]=make_pair(129,124);
+       puntos[1]=make_pair(156,30);
+       puntos[2]=make_pair(99,77);
+       puntos[3]=make_pair(22,10);
+       puntos[4]=make_pair(26,118);
+       */
+       glClear (GL_COLOR_BUFFER_BIT);
+       glColor3f (0.0, 1.0, 1.0);
+       //scanfill(polin->ivertices->size(),puntos);
+       cout<<"aqui llega"<<endl;
+       try {
+           scanfill(polin->ivertices->size(),puntos);
+       } catch (const exception  & e) {
+        cout<<"error aqui: "<< e.what() <<endl;
+       }
+
+
+      // glFlush();
+ }
+
+
+void mouse(int button, int state, int x, int y)
+{
+
+    switch (button) {
+        case GLUT_LEFT_BUTTON:
+            if (state == GLUT_DOWN)
+            {
+               // cout<<"coordenada"<<x-winWidth/2<<" "<<winHeight/2-y<<endl;
+                cout<<"coordenada"<<x<<" "<<winHeight-y<<endl;
+                //polin->insert_vertice(x-winWidth/2,winHeight/2-y);
+                polin->insert_vertice(x,winHeight-y);
+                glClear (GL_COLOR_BUFFER_BIT);
+                polin->redibujar_mouse();
+
+                glFlush();
+                // glutIdleFunc(spinDisplay);
+            }
+            break;
+        case GLUT_RIGHT_BUTTON:
+            if (state == GLUT_DOWN)
+            {
+                glClear (GL_COLOR_BUFFER_BIT);
+                 //polin->ivertices->push_back(make_pair(polin->ivertices->at(0).first,polin->ivertices->at(0).second));
+                 polin->redibujar();
+                 relleno_concavo();
+                 glFlush();
+                // cout<<"cuando termine presione  0"<<endl;
+                 int salir2=0, opcion2;
+                 while(salir2 == 0)
+                 {
+                     cout<<"Transformaciones"<<endl;
+                     cout<<"1) Traslacion"<<endl;
+                     cout<<"2) Rotacion"<<endl;
+                     cout<<"3) Escalado "<<endl;
+                     cout<<"ESC) Salir"<<endl;
+                     cin>>opcion2;
+                     switch (opcion2) {
+                     case 1:
+                     {
+                         int xt,yt;
+                         cout<<"Traslacion"<<endl;
+                         cout<<"Coordeanada X: ";
+                         cin>>xt;
+                         cout<<"Coordeanada Y: ";
+                         cin>>yt;
+
+                         glClear (GL_COLOR_BUFFER_BIT);
+                         polin->traslacion(xt,yt);
+                         polin->redibujar();
+                         glFlush();
+                     }
+                         break;
+
+                     case 2:
+                     {
+                         double ag;
+                         cout<<"Rotacion"<<endl;
+                         cout<<"Angulo: ";
+                         cin>>ag;
+                         glClear (GL_COLOR_BUFFER_BIT);
+                         polin->rotacion_compuesta(ag);
+                         polin->redibujar();
+                         glFlush();
+                     }
+                            break;
+                     case 3:
+                     {
+                         int xt,yt;
+                         cout<<"Escalado"<<endl;
+                         cout<<"Coordeanada X: ";
+                         cin>>xt;
+                         cout<<"Coordeanada Y: ";
+                         cin>>yt;
+                         glClear (GL_COLOR_BUFFER_BIT);
+                         polin->escalado_compuesto(xt,yt);
+                         polin->redibujar();
+                         glFlush();
+                     }
+                         break;
+                     case 0:
+                         salir2=1;
+                     }
+                 }
+            }
+                // glutIdleFunc(NULL);
+            break;
+        case GLUT_MIDDLE_BUTTON:
+            if (state == GLUT_DOWN)
+                return;
+                // glutIdleFunc(NULL);
+         break;
+      default:
+         break;
+   }
+    /*glColor3d(1,0,1);
+    glBegin(GL_POINTS);
+        glVertex2d(0,0);
+    glEnd();*/
+
+}
 int main(int argc, char **argv)
 {
  glutInit(&argc, argv);

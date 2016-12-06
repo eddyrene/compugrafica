@@ -2,9 +2,12 @@
 #define POLIGNO_H
 #include "lamatriz.h"
 #include "linea.h"
+#include "relleno_poligono.cpp"
 #include <vector>
 
 using namespace std;
+
+
 
 typedef vector<pair<float,float> > points_float;
 
